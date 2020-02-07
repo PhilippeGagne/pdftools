@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-
+import os
 import sys
 import argparse
 from pdftools import pdf_add
@@ -44,4 +44,13 @@ def process_arguments(args):
 
 if __name__ == "__main__":
     args = process_arguments(sys.argv[1:])
+
+    if os.path.isfile(args.des):
+    ans = input(
+        "The file '%s' already exists. "
+        "Overwrite? Yes/Abort [Y/a]: " % output
+    ).lower()
+    if ans == "a":
+        return
+
     pdf_add(args.dest, args.source, args.pages, args.output)

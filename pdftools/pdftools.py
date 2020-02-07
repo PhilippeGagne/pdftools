@@ -5,14 +5,6 @@ from PyPDF2 import PdfFileReader, PdfFileWriter
 from pdftools.parseutil import parse_rangearg, limit
 
 
-def overwrite_dlg(filename):
-    ans = input("Overwrite file '%s'? Yes/No [Y/n]: " % filename).lower()
-    if ans in ["y", ""]:
-        return True
-
-    return False
-
-
 def pdf_merge(inputs: [str], output: str, delete: bool = False):
     """
     Merge multiple Pdf input files in one output file.
@@ -22,14 +14,6 @@ def pdf_merge(inputs: [str], output: str, delete: bool = False):
 
     """
     writer = PdfFileWriter()
-    if os.path.isfile(output):
-        ans = input(
-            "The file '%s' already exists. "
-            "Overwrite? Yes/Abort [Y/a]: " % output
-        ).lower()
-        if ans == "a":
-            return
-
     outputfile = open(output, "wb")
     try:
         infiles = []
@@ -116,13 +100,6 @@ def pdf_copy(input: str, output: str, pages: [int], yes_to_all=False):
     :param pages: list containing the page numbers to copy in the new file
 
     """
-    if not os.path.isfile(input):
-        print("Error. The file '%s' does not exist." % input)
-        return
-
-    if os.path.isfile(output) and not yes_to_all and not overwrite_dlg(output):
-        return
-
     with open(input, "rb") as inputfile:
         reader = PdfFileReader(inputfile)
         outputfile = open(output, "wb")
@@ -150,9 +127,6 @@ def pdf_split(
 
     """
     output = output or os.path.splitext(input)[0]
-    if not os.path.isfile(input):
-        print("Error. The file '%s' does not exist." % input)
-        return
 
     with open(input, "rb") as inputfile:
         reader = PdfFileReader(inputfile)
@@ -207,13 +181,6 @@ def pdf_zip(
     :param delete: if true the input files will be deleted after zipping
 
     """
-    if os.path.isfile(output):
-        ans = input(
-            "The file '%s' already exists. "
-            "Overwrite? Yes/Abort [Y/a]: " % output
-        ).lower()
-        if ans not in ["y", ""]:
-            return
 
     outputfile = open(output, "wb")
     try:
@@ -259,13 +226,6 @@ def pdf_insert(
     :param output: output file
 
     """
-    if output is not None and os.path.isfile(output):
-        ans = input(
-            "The file '%s' already exists. "
-            "Overwrite? Yes/Abort [Y/a]: " % output
-        ).lower()
-        if ans not in ["y", ""]:
-            return
 
     writer = PdfFileWriter()
     # read pages from file1
@@ -320,10 +280,6 @@ def pdf_remove(source: str, pages: [str], output: str = None):
     :param output: pdf output file
 
     """
-    if output is not None and os.path.isfile(output):
-        if overwrite_dlg(output) is False:
-            return
-
     writer = PdfFileWriter()
     srcfile = open(source, "rb")
     srcreader = PdfFileReader(srcfile)
@@ -364,10 +320,6 @@ def pdf_add(dest: str, source: str, pages: [str], output: str):
     :param output: output pdf file
 
     """
-    if output is not None and os.path.isfile(output):
-        if not overwrite_dlg(output):
-            return
-
     writer = PdfFileWriter()
 
     # read pages from destination file

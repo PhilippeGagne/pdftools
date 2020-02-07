@@ -41,4 +41,13 @@ def process_arguments(args):
 
 if __name__ == "__main__":
     args = process_arguments(sys.argv[1:])
+
+    if args.output is not None and os.path.isfile(args.output):
+    ans = input(
+        "The file '%s' already exists. "
+        "Overwrite? Yes/Abort [Y/a]: " % args.output
+    ).lower()
+    if ans not in ["y", ""]:
+        return
+
     pdf_zip(args.input1, args.input2, args.output, args.delete, args.revert)
